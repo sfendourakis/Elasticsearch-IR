@@ -37,29 +37,28 @@ class Return:
 		return final_score
 
 	def evaluation(self, hit):
+		user_id = input("Enter your user id: ")
 		for output in hit:
 			temp = ast.literal_eval(output["_id"])
 			movie_id = temp["id"]
-			new_score = self.final_score(self.user_score(1, movie_id, self.file), self.avg_user_score(movie_id, self.file), output["_score"])
+			new_score = self.final_score(self.user_score(user_id, movie_id, self.file), self.avg_user_score(movie_id, self.file), output["_score"])
 			output["_score"] = new_score
 		self.sort_print(hit)
 
 	def sort_print(self, hit):
 		print("Results of your searching (our own algorithm):")
-		for output in hit:
+		for x in hit:
 			maxy = 0
 			for x in hit:
 				if x["_score"] > maxy:
 					maxy = x["_score"]
 			for x in hit:
 				if x["_score"] == maxy:
-					print(x["_source"]["movie title"], maxy)
+					print(x["_source"]["movie title"],f"{maxy:.2f}")
 					x["_score"] = 0
 			
-
-
 	def search_title(self):
-		query = es.search(index="test", body={"query": {"match": {"movie title": self.title}}})
+		query = es.search(index="movies", body={"query": {"match": {"movie title": self.title}}})
 		hits = query['hits']['hits']
 		self.evaluation(hits)
 
@@ -67,5 +66,5 @@ class Return:
 
 
 
-search = Return(input("Enter the movie title you want to find: "), "H:\\PANAGIOTIS\\PROJECT IR\\ratings.csv")
+search = Return(input("Enter the movie title you want to find: "), "C:\\Users\\30694\\Desktop\\PROJECTS\\ProjectIR\\ratings.csv")
 search.search_title()

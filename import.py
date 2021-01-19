@@ -18,19 +18,19 @@ class Import:
 
 	def import_data(self):
 		def import_index(id, body):
-			res = es.index(index=self.index, doc_type=self.doctype, id=ID, body=BODY, request_timeout=120)
+			res = es.index(index=self.index, doc_type=self.doctype, id=ID, body=BODY)
 			print(res)
-		
+
 		with open (self.file, newline='', encoding="utf8") as movies:
 			file = csv.reader(movies, delimiter=',', quotechar='"')
 			for line in file:
 				ID = {"id" : line[0]}
-				BODY = {"movie title" : line[1]}
+				BODY = {"movie title" : line[1], "genre" : line[2]}
 				print(ID,BODY)
 				import_index(ID,BODY)
 
 
 
-elastic = Import("test", "doc", "movies.csv")
+elastic = Import("movies", "doc", r'C:\Users\30694\Desktop\PROJECTS\ProjectIR\movies.csv')
 elastic.check_connection()
 elastic.import_data()
